@@ -255,6 +255,7 @@ Then, the environment variables you need to configure are as follows:
 | FEATURE_EDIT_THIS_PAGE   | No       | Whether to show "Edit This Page" button | false                              |
 | FEATURE_SHOW_STAR_BUTTON | No       | Whether to show "Star on Github" button | true                               |
 | FEATURE_SHOW_HOME_BUTTON | No       | Whether to show "Home" button           | true                               |
+| FEATURE_SHOW_POWERED_BY  | No       | Whether to show "Powered by" links in footer (uses Uptime Kuma config if not set) | true                               |
 | FEATURE_TITLE            | No       | Custom page title                       | My Monitoring Dashboard            |
 | FEATURE_DESCRIPTION      | No       | Custom page description                 | A beautiful monitoring dashboard   |
 | FEATURE_ICON             | No       | Custom page icon URL                    | /icon.svg                          |

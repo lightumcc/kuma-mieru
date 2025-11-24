@@ -1,4 +1,5 @@
 import { apiConfig } from '@/config/api';
+import { env } from '@/config/env';
 import type { GlobalConfig, Maintenance } from '@/types/config';
 import { ConfigError } from '@/utils/errors';
 import { extractPreloadData } from '@/utils/json-processor';
@@ -104,10 +105,17 @@ export const getGlobalConfig = cache(async (): Promise<GlobalConfig> => {
     const maintenanceData = await getMaintenanceData();
     const maintenanceList = maintenanceData.maintenanceList || [];
 
+    // Override showPoweredBy with env var if set
+    const showPoweredBy =
+      env.config.isShowPoweredBy !== undefined
+        ? env.config.isShowPoweredBy
+        : preloadData.config.showPoweredBy;
+
     const config: GlobalConfig = {
       config: {
         ...preloadData.config,
         theme,
+        showPoweredBy,
       },
       incident: preloadData.incident
         ? {

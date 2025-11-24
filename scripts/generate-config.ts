@@ -21,6 +21,7 @@ const configSchema = z.object({
   isEditThisPage: z.boolean().default(false),
   isShowStarButton: z.boolean().default(true),
   isShowHomeButton: z.boolean().default(true),
+  isShowPoweredBy: z.boolean().optional(),
   homeLink: z.string().default('/'),
 });
 
@@ -35,6 +36,18 @@ function getRequiredEnvVar(name: string): string {
 function getBooleanEnvVar(name: string, defaultValue = true): boolean {
   const value = process.env[name];
   if (value === undefined) return defaultValue;
+
+  console.log(`[env] ${name}=${value} (type: ${typeof value})`);
+
+  const lowercaseValue = value.toLowerCase();
+  console.log(`[env] ${name} -> ${lowercaseValue}`);
+
+  return lowercaseValue === 'true';
+}
+
+function getOptionalBooleanEnvVar(name: string): boolean | undefined {
+  const value = process.env[name];
+  if (value === undefined) return undefined;
 
   console.log(`[env] ${name}=${value} (type: ${typeof value})`);
 
@@ -133,10 +146,12 @@ async function generateConfig() {
     const isEditThisPage = getBooleanEnvVar('FEATURE_EDIT_THIS_PAGE', false);
     const isShowStarButton = getBooleanEnvVar('FEATURE_SHOW_STAR_BUTTON', true);
     const isShowHomeButton = getBooleanEnvVar('FEATURE_SHOW_HOME_BUTTON', true);
+    const isShowPoweredBy = getOptionalBooleanEnvVar('FEATURE_SHOW_POWERED_BY');
     const homeLink = getOptionalEnvVar('FEATURE_HOME_LINK', '/');
 
     console.log(`[env] - isEditThisPage: ${isEditThisPage}`);
     console.log(`[env] - isShowStarButton: ${isShowStarButton}`);
+    console.log(`[env] - isShowPoweredBy: ${isShowPoweredBy}`);
 
     const siteMeta = await fetchSiteMeta(baseUrl, pageId);
 
@@ -148,6 +163,7 @@ async function generateConfig() {
       isEditThisPage,
       isShowStarButton,
       isShowHomeButton,
+      isShowPoweredBy,
       homeLink,
     });
 

@@ -15,6 +15,7 @@ const configSchema = z.object({
   isEditThisPage: z.boolean(),
   isShowStarButton: z.boolean(),
   isShowHomeButton: z.boolean(),
+  isShowPoweredBy: z.boolean().optional(),
   homeLink: z.string(),
 });
 

@@ -263,6 +263,7 @@ docker run -d \
 | FEATURE_EDIT_THIS_PAGE   | No   | 是否展示 "Edit This Page" 按钮 | false                                              |
 | FEATURE_SHOW_STAR_BUTTON | No   | 是否展示 "Star on Github" 按钮 | true                                               |
 | FEATURE_SHOW_HOME_BUTTON | No   | 是否展示 "Home" 按钮           | true                                               |
+| FEATURE_SHOW_POWERED_BY  | No   | 是否在页脚展示 "Powered by" 链接（不设置则使用 Uptime Kuma 的配置） | true                                               |
 | FEATURE_TITLE            | No   | 自定义页面标题                  | Kuma Mieru                                         |
 | FEATURE_DESCRIPTION      | No   | 自定义页面描述                  | A beautiful and modern uptime monitoring dashboard |
 | FEATURE_ICON             | No   | 自定义页面图标URL               | /icon.svg                                          |

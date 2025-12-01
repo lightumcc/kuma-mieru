@@ -11,15 +11,16 @@ import { getLocale, getMessages } from 'next-intl/server';
 import { Providers } from './providers';
 
 import { Toaster } from 'sonner';
+import {env} from "@/config/env";
 
 export const metadata: Metadata = {
   title: {
-    default: 'Kuma Mieru',
+    default: env.config.siteMeta.title,
     template: siteConfig.name ? `%s - ${siteConfig.name}` : '%s - Kuma Mieru',
   },
-  description: siteConfig.description || 'Kuma Mieru',
+  description: env.config.siteMeta.description,
   icons: {
-    icon: siteConfig.iconCandidates,
+    icon: env.config.siteMeta.icon,
   },
   generator: `https://github.com/Alice39s/kuma-mieru v${packageJson.version}`,
   formatDetection: {

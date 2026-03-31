@@ -51,7 +51,7 @@ export const Navbar = () => {
   const showEditPage = pageConfig.isEditThisPage;
 
   const resolvedTitle = globalConfig?.config.title
-    ? `${pageConfig.siteMeta.title}  -  ${globalConfig?.config.title}`
+    ? `${pageConfig.siteMeta.title}`
     : pageConfig.siteMeta.title;
 
   const homeHref = pageConfig.pageId === pageConfig.defaultPageId ? '/' : `/${pageConfig.pageId}`;

@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { z } from 'zod';
-import { DEFAULT_SITE_META as DEFAULT_SITE_META_VALUES } from '../config/defaults';
-import type { SiteMeta } from '../config/schemas';
+import {
+  DEFAULT_SITE_ICON,
+  DEFAULT_SITE_META as DEFAULT_SITE_META_VALUES,
+} from '../config/defaults';
 import { generatedConfigSchema, siteMetaSchema } from '../config/schemas';
+import type { SiteMeta } from '../config/schemas';
 import { resolvePreloadDataFromHtml } from '../utils/preload-data';
-import { getBooleanWithSource, getString } from './lib/env';
+import { getString, getBooleanWithSource, formatResolved } from './lib/env';
 import { resolveEndpointConfig } from './lib/uptime-kuma';
 
 import 'dotenv/config';
@@ -90,31 +92,6 @@ const resolveSiteMeta = ({
     iconCandidates,
   });
 };
-
-function getRequiredEnvVar(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Environment variable ${name} is required`);
-  }
-  return value;
-}
-
-function getBooleanEnvVar(name: string, defaultValue = true): boolean {
-  const value = process.env[name];
-  if (value === undefined) return defaultValue;
-
-  console.log(`[env] ${name}=${value} (type: ${typeof value})`);
-
-  const lowercaseValue = value.toLowerCase();
-  console.log(`[env] ${name} -> ${lowercaseValue}`);
-
-  return lowercaseValue === 'true';
-}
-
-function getOptionalEnvVar(name: string, defaultValue: string | null = null): string | null {
-  const value = process.env[name];
-  return value !== undefined ? value : defaultValue;
-}
 
 async function fetchSiteMeta(baseUrl: string, pageId: string) {
   const titleOverride = toOverride(getString('KUMA_MIERU_TITLE'));
@@ -212,8 +189,6 @@ async function generateConfig() {
 
     const isEditThisPage = getBooleanWithSource('KUMA_MIERU_EDIT_THIS_PAGE', false);
     const isShowStarButton = getBooleanWithSource('KUMA_MIERU_SHOW_STAR_BUTTON', true);
-    const isShowHomeButton = getBooleanEnvVar('FEATURE_SHOW_HOME_BUTTON', true);
-    const homeLink = getOptionalEnvVar('FEATURE_HOME_LINK', '/');
 
     console.log(
       `[env] - isEditThisPage: ${isEditThisPage.value}` +
@@ -263,8 +238,6 @@ async function generateConfig() {
       isPlaceholder: false,
       isEditThisPage: isEditThisPage.value,
       isShowStarButton: isShowStarButton.value,
-      isShowHomeButton,
-      homeLink,
     });
 
     const configPath = path.join(process.cwd(), 'config', 'generated-config.json');

@@ -9,13 +9,25 @@ import {
   DropdownTrigger,
   Dropdown as HeroUIDropdown,
 } from '@heroui/react';
-import { FlagCn, FlagHk, FlagJp, FlagKr, FlagRu, FlagTw, FlagUs } from '@sankyu/react-circle-flags';
+import {
+  FlagBr,
+  FlagCn,
+  FlagFr,
+  FlagHk,
+  FlagJp,
+  FlagKr,
+  FlagRu,
+  FlagTw,
+  FlagUs,
+} from '@sankyu/react-circle-flags';
 import { Languages, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
 
 const flagComponents: Record<string, React.ComponentType<{ width?: number; height?: number }>> = {
+  BR: FlagBr,
   CN: FlagCn,
   TW: FlagTw,
   HK: FlagHk,
@@ -23,10 +35,12 @@ const flagComponents: Record<string, React.ComponentType<{ width?: number; heigh
   JP: FlagJp,
   KR: FlagKr,
   RU: FlagRu,
+  FR: FlagFr,
 };
 
 export const I18NSwitch = () => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const t = useTranslations();
 
   const handleLocaleChange = (locale: Locale, localeName: string) => {
@@ -41,7 +55,7 @@ export const I18NSwitch = () => {
         });
 
         setTimeout(() => {
-          window.location.reload();
+          router.refresh();
         }, 300);
       } catch (error) {
         console.error('Failed to change locale:', error);

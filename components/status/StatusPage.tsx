@@ -3,10 +3,6 @@
 import AutoRefresh from '@/components/AutoRefresh';
 import FilterResults from '@/components/FilterResults';
 import MonitorGroupList from '@/components/MonitorGroupList';
-import {
-  ActiveIncidentSection,
-  ResolvedIncidentSection,
-} from '@/components/alerts/IncidentHistory';
 import IncidentMarkdownAlert from '@/components/alerts/IncidentMarkdown';
 import MaintenanceAlert from '@/components/alerts/Maintenance';
 import SystemStatusAlert from '@/components/alerts/SystemStatus';
@@ -23,8 +19,7 @@ import { filterMonitorByStatus } from '@/utils/monitorFilters';
 import { Button, Tooltip } from '@heroui/react';
 import { LayoutGrid, LayoutList } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { getIconUrl } from '@/utils/icon-proxy';
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
 
 const GLOBAL_VIEW_PREFERENCE_KEY = 'view-preference';
 
@@ -34,26 +29,16 @@ interface EnhancedMonitorGroup extends MonitorGroup {
 }
 
 export function StatusPage() {
-  const { config: globalConfig, isLoading: isLoadingConfig } = useConfig();
-  const { maintenanceList, isLoading: isLoadingMaintenance } = useMaintenanceData();
+  const { config: globalConfig } = useConfig();
+  const { maintenanceList } = useMaintenanceData();
   const { monitorGroups, monitoringData, isLoading: isLoadingMonitors } = useMonitorData();
   const { searchTerm, isFiltering, clearSearch, filterStatus, searchInGroup } = useNodeSearch();
   const currentPageConfig = usePageConfig();
 
   const [isGlobalLiteView, setIsGlobalLiteView] = useState(false);
+  const [, startTransition] = useTransition();
 
   const viewT = useTranslations('view');
-
-  useEffect(() => {
-    // custom icon
-    getIconUrl().then(iconUrl => {
-      let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-      link.setAttribute('type', 'image/x-icon');
-      link.setAttribute('href', iconUrl || '/icon.svg');
-      link.setAttribute('rel', 'shortcut icon');
-      document.getElementsByTagName('head')[0].appendChild(link);
-    });
-  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -70,7 +55,7 @@ export function StatusPage() {
     }
   }, [isGlobalLiteView]);
 
-  const isLoading = isLoadingMonitors || isLoadingConfig || isLoadingMaintenance;
+  const isLoading = isLoadingMonitors;
 
   const activeMaintenances = maintenanceList.filter(
     m => m.active && (m.status === 'under-maintenance' || m.status === 'scheduled')
@@ -81,7 +66,9 @@ export function StatusPage() {
   };
 
   const toggleGlobalView = () => {
-    setIsGlobalLiteView(prev => !prev);
+    startTransition(() => {
+      setIsGlobalLiteView(prev => !prev);
+    });
   };
 
   const filteredMonitorGroups = useMemo(() => {
@@ -184,9 +171,9 @@ export function StatusPage() {
           <MaintenanceAlert key={maintenance.id} maintenance={maintenance} />
         ))}
 
-        {globalConfig?.incident && <IncidentMarkdownAlert incident={globalConfig.incident} />}
-
-        <ActiveIncidentSection />
+        {globalConfig?.incidents?.map(incident => (
+          <IncidentMarkdownAlert key={incident.id} incident={incident} />
+        ))}
 
         <FilterResults matchedMonitorsCount={matchedMonitorsCount} />
 
@@ -198,8 +185,6 @@ export function StatusPage() {
           isGlobalLiteView={isGlobalLiteView}
           clearSearch={clearSearch}
         />
-
-        <ResolvedIncidentSection />
       </div>
     </AutoRefresh>
   );

@@ -2,7 +2,9 @@
 
 import { usePageConfig } from '@/components/context/PageConfigContext';
 import type { GlobalConfig } from '@/types/config';
-import type { IncidentHistoryResponse, MonitorResponse, MonitoringData } from '@/types/monitor';
+import type { MonitorResponse, MonitoringData } from '@/types/monitor';
+import type { PageTabMeta, PageTabsStatusMatrix } from '@/types/page';
+import { useCallback, useEffect, useRef } from 'react';
 import useSWR, { mutate } from 'swr';
 import type { SWRConfiguration } from 'swr';
 
@@ -10,6 +12,16 @@ interface ApiEnvelope {
   success?: boolean;
   status?: 'ok' | 'partial' | 'all_failed' | 'partial_failed';
   error?: string;
+}
+
+export interface ConfigResponse extends GlobalConfig {
+  pageTabs?: PageTabMeta[];
+  matrixStatus?: PageTabsStatusMatrix['status'];
+  success?: boolean;
+  status?: ApiEnvelope['status'];
+  failureType?: PageTabMeta['failureType'];
+  error?: string;
+  timestamp?: number;
 }
 
 /**
@@ -49,8 +61,6 @@ const fetcher = async <T>(url: string): Promise<T> => {
 export const SWR_KEYS = {
   MONITOR: (pageId: string) => `/api/monitor?pageId=${encodeURIComponent(pageId)}`,
   CONFIG: (pageId: string) => `/api/config?pageId=${encodeURIComponent(pageId)}`,
-  INCIDENT_HISTORY: (pageId: string) =>
-    `/api/incident-history?pageId=${encodeURIComponent(pageId)}`,
 };
 
 /**
@@ -64,6 +74,104 @@ const DEFAULT_SWR_CONFIG: SWRConfiguration = {
   errorRetryInterval: 1000,
   loadingTimeout: 5000, // 增加加载超时
 };
+
+interface PrefetchOptions {
+  ttlMs?: number;
+  force?: boolean;
+}
+
+interface IntentPrefetchOptions extends PrefetchOptions {
+  delayMs?: number;
+  disabled?: boolean;
+}
+
+const DEFAULT_PREFETCH_TTL_MS = 30_000;
+const DEFAULT_PREFETCH_DELAY_MS = 120;
+const MAX_CONCURRENT_PREFETCHES = 2;
+
+let activePrefetches = 0;
+const prefetchedAt = new Map<string, number>();
+const inFlightPrefetchKeys = new Set<string>();
+
+export async function prefetchSWRKey<T>(key: string, options: PrefetchOptions = {}) {
+  const ttlMs = options.ttlMs ?? DEFAULT_PREFETCH_TTL_MS;
+  const now = Date.now();
+  const lastPrefetchedAt = prefetchedAt.get(key);
+
+  if (!options.force && lastPrefetchedAt && now - lastPrefetchedAt < ttlMs) {
+    return false;
+  }
+
+  if (inFlightPrefetchKeys.has(key) || activePrefetches >= MAX_CONCURRENT_PREFETCHES) {
+    return false;
+  }
+
+  activePrefetches += 1;
+  prefetchedAt.set(key, now);
+  inFlightPrefetchKeys.add(key);
+
+  try {
+    await mutate(key, fetcher<T>(key), {
+      populateCache: true,
+      revalidate: false,
+    });
+
+    return true;
+  } catch {
+    return false;
+  } finally {
+    activePrefetches -= 1;
+    inFlightPrefetchKeys.delete(key);
+  }
+}
+
+export function useIntentPrefetch(
+  keys: string | readonly string[],
+  options: IntentPrefetchOptions = {}
+) {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // stable ref for keys — avoids array identity churn in callbacks
+  const keysRef = useRef<readonly string[]>(
+    Array.isArray(keys) ? (keys as readonly string[]) : [keys as string]
+  );
+  const delayMs = options.delayMs ?? DEFAULT_PREFETCH_DELAY_MS;
+  const disabled = options.disabled ?? false;
+  const force = options.force ?? false;
+  const ttlMs = options.ttlMs;
+
+  // keep keys ref in sync without adding array to callback deps
+  const keysSignature = Array.isArray(keys)
+    ? (keys as readonly string[]).join('\x00')
+    : (keys as string);
+  useEffect(() => {
+    keysRef.current = Array.isArray(keys) ? (keys as readonly string[]) : [keys as string];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [keysSignature]);
+
+  const cancelPrefetch = useCallback(() => {
+    if (!timerRef.current) return;
+    clearTimeout(timerRef.current);
+    timerRef.current = null;
+  }, []);
+
+  const schedulePrefetch = useCallback(() => {
+    if (disabled) return;
+    cancelPrefetch();
+    timerRef.current = setTimeout(() => {
+      timerRef.current = null;
+      for (const k of keysRef.current) {
+        void prefetchSWRKey(k, { force, ttlMs });
+      }
+    }, delayMs);
+  }, [cancelPrefetch, delayMs, disabled, force, ttlMs]);
+
+  useEffect(() => cancelPrefetch, [cancelPrefetch]);
+
+  return {
+    schedulePrefetch,
+    cancelPrefetch,
+  };
+}
 
 /**
  * 获取监控数据的 hook
@@ -81,6 +189,7 @@ export function useMonitorData(config?: SWRConfiguration) {
   } = useSWR<MonitorResponse>(SWR_KEYS.MONITOR(pageId), fetcher, {
     ...DEFAULT_SWR_CONFIG,
     refreshInterval: 60000, // 每60秒刷新一次
+    keepPreviousData: true, // 页面切换时保留旧数据，避免闪烁
     ...config,
   });
 
@@ -151,9 +260,10 @@ export function useConfig(config?: SWRConfiguration) {
     error,
     isLoading,
     mutate: revalidate,
-  } = useSWR<GlobalConfig>(SWR_KEYS.CONFIG(pageId), fetcher, {
+  } = useSWR<ConfigResponse>(SWR_KEYS.CONFIG(pageId), fetcher, {
     ...DEFAULT_SWR_CONFIG,
     revalidateIfStale: false, // 除非明确要求，否则不重新验证陈旧数据
+    keepPreviousData: true, // 页面切换时保留旧数据，避免闪烁
     ...config,
   });
 
@@ -179,7 +289,7 @@ export function useMaintenanceData(config?: SWRConfiguration) {
     error,
     isLoading,
     mutate: revalidate,
-  } = useSWR<GlobalConfig>(SWR_KEYS.CONFIG(pageId), fetcher, {
+  } = useSWR<ConfigResponse>(SWR_KEYS.CONFIG(pageId), fetcher, {
     ...DEFAULT_SWR_CONFIG,
     refreshInterval: 60000, // 每60秒刷新一次
     ...config,
@@ -205,33 +315,4 @@ export function revalidateData(pageId: string, key?: string) {
   }
 
   return Promise.all([mutate(SWR_KEYS.MONITOR(pageId)), mutate(SWR_KEYS.CONFIG(pageId))]);
-}
-
-/**
- * Hook to fetch incident history data
- * @param config - SWR configuration options
- * @returns incident history data, loading state and error info
- */
-export function useIncidentHistory(config?: SWRConfiguration) {
-  const { pageId } = usePageConfig();
-
-  const {
-    data,
-    error,
-    isLoading,
-    mutate: revalidate,
-  } = useSWR<IncidentHistoryResponse>(SWR_KEYS.INCIDENT_HISTORY(pageId), fetcher, {
-    ...DEFAULT_SWR_CONFIG,
-    refreshInterval: 60000,
-    ...config,
-  });
-
-  return {
-    incidents: data?.incidents || [],
-    total: data?.total ?? 0,
-    isLoading,
-    isError: !!error,
-    error,
-    revalidate,
-  };
 }

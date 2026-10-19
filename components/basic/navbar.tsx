@@ -14,12 +14,13 @@ import {
 } from '@heroui/react';
 import { link as linkStyles } from '@heroui/theme';
 import clsx from 'clsx';
+import Image from 'next/image';
 import NextLink from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { GithubIcon, SearchIcon } from '@/components/basic/icons';
 import { ThemeSwitch } from '@/components/basic/theme-switch';
-import { buildIconProxyUrl, getIconUrl } from '@/utils/icon-proxy';
+import { buildIconProxyUrl } from '@/utils/icon-proxy';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -50,9 +51,7 @@ export const Navbar = () => {
   const { config: globalConfig } = useConfig();
   const showEditPage = pageConfig.isEditThisPage;
 
-  const resolvedTitle = globalConfig?.config.title
-    ? `${pageConfig.siteMeta.title}`
-    : pageConfig.siteMeta.title;
+  const resolvedTitle = globalConfig?.config.title || pageConfig.siteMeta.title;
 
   const homeHref = pageConfig.pageId === pageConfig.defaultPageId ? '/' : `/${pageConfig.pageId}`;
 
@@ -119,12 +118,7 @@ export const Navbar = () => {
     </Button>
   );
 
-  const [iconUrl, setIconUrl] = useState<string>('/icon.svg');
-  useEffect(() => {
-    getIconUrl(pageConfig.pageId).then(icon => {
-      setIconUrl(icon);
-    });
-  }, []);
+  const getIconUrl = () => buildIconProxyUrl(pageConfig.pageId) || '/icon.svg';
   const navItems = [
     {
       label: 'page.main',
@@ -147,8 +141,13 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href={homeHref}>
-            <img src={iconUrl ?? '/icon.svg'} alt="" width={34} height={34} className="mr-1" />
-            <p className="font-bold text-inherit whitespace-pre">{resolvedTitle}</p>
+            <Image
+              src={getIconUrl() || '/icon.svg'}
+              alt={`${resolvedTitle} logo`}
+              width={34}
+              height={34}
+            />
+            <p className="font-bold text-inherit">{resolvedTitle}</p>
           </NextLink>
         </NavbarBrand>
         {navItems.map((item, index) => {
@@ -214,7 +213,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu className="z-60">
-        {pageConfig.isShowStarButton ?? starButton}
+        {pageConfig.isShowStarButton && starButton}
         <div className="flex flex-col gap-4">{searchInput}</div>
         <div className="mx-4 mt-4 flex flex-col gap-2" aria-label={t('navbar.mobileNav')}>
           {navItems.map((item, index) => {

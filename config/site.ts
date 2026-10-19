@@ -12,21 +12,18 @@ interface NavItem {
   label: string;
   href: string;
   external: boolean;
-  show: boolean;
 }
 
 const navItems: NavItem[] = [
   {
     label: 'page.main',
-    href: env.config.homeLink ?? '/',
-    external: env.config.homeLink !== '/',
-    show: env.config.isShowHomeButton,
+    href: '/',
+    external: false,
   },
   {
     label: 'page.edit',
     href: `/api/manage-status-page?pageId=${encodeURIComponent(env.config.pageId)}`,
     external: true,
-    show: env.config.isEditThisPage,
   },
 ];
 
@@ -60,8 +57,8 @@ const getVisibleNavItems = (items: NavItem[]): NavItem[] => {
 const iconCandidates = resolveIconCandidates(env.config.pageIds);
 
 export const siteConfig = {
-  name: env.config.siteMeta.title ?? baseConfig.name,
-  description: env.config.siteMeta.description ?? baseConfig.description,
+  name: env.config.siteMeta.title || baseConfig.name,
+  description: env.config.siteMeta.description || baseConfig.description,
   icon: iconCandidates[0],
   iconCandidates,
   navItems: getVisibleNavItems(navItems),

@@ -10,13 +10,43 @@ updates:
       day: 'thursday'
       time: '00:00'
       timezone: 'Etc/UTC'
+    # 新包冷静期：按周批量合并，确保新发布至少经过一次检查周期（约 3~7 天）
+    # 才进入更新 PR，避免追新导致的不稳定版本
+    groups:
+      all-dependencies:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
+      major-updates:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
     commit-message:
       prefix: 'chore(deps)'
     labels:
       - 'dependencies'
       - 'deps-bun'
       - 'automerge'
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
+    # 安全漏洞 PR 不受 group 限制，会单独立即创建
+    # 非安全更新统一走 weekly batch，降低追新风险
+    # HeroUI v2 生态：冻结 major 升级，防止再次误升到 v3（见 #469）
+    # @heroui/react 必须留在 v2.x（与 @heroui/theme@2 + tailwind-variants@1 配套）
+    # 待 v3 迁移完成后再手动解除
+    ignore:
+      - dependency-name: '@heroui/*'
+        update-types:
+          - 'version-update:semver-major'
+      # Next.js 16.2 resolves the legacy TypeScript compiler entrypoint
+      # `typescript/lib/typescript.js`, which TypeScript 7 no longer ships.
+      # Remove this guard only after the production Next.js build supports TS 7.
+      - dependency-name: 'typescript'
+        update-types:
+          - 'version-update:semver-major'
+
   - package-ecosystem: 'docker'
     directory: '/'
     schedule:
@@ -24,10 +54,14 @@ updates:
       day: 'thursday'
       time: '00:00'
       timezone: 'Etc/UTC'
+    groups:
+      docker-images:
+        patterns:
+          - '*'
     commit-message:
       prefix: 'chore(deps)'
     labels:
       - 'dependencies'
       - 'deps-docker'
       - 'automerge'
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3

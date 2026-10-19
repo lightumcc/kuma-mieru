@@ -12,8 +12,6 @@ export const getConfig = (pageId?: string): Config | null => {
     siteMeta,
     isEditThisPage,
     isShowStarButton,
-    isShowHomeButton,
-    homeLink,
   } = env.config;
   const { NODE_ENV } = env.runtime;
 
@@ -42,8 +40,6 @@ export const getConfig = (pageId?: string): Config | null => {
     isPlaceholder: env.config.isPlaceholder,
     isEditThisPage: isEditThisPage ?? false,
     isShowStarButton: isShowStarButton ?? true,
-    isShowHomeButton: isShowHomeButton ?? true,
-    homeLink: homeLink || '/',
     htmlEndpoint: `${resolvedBaseUrl}/status/${resolvedPageId}`,
     apiEndpoint: `${resolvedBaseUrl}/api/status-page/heartbeat/${resolvedPageId}`,
   };

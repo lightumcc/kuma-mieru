@@ -1,6 +1,6 @@
 # Kuma Mieru :traffic_light:
 
-**Kuma Mieru - A Modern Third-Party Monitoring Dashboard for Uptime Kuma**
+**Kuma Mieru - A Modern Third-Party Monitoring Dashboard for Uptime Kuma**  
 Built with Next.js 16, TypeScript, and Recharts, this project enhances Uptime Kuma's public status pages with intuitive visualizations and latency charts.
 
 [中文版](README.md) | English Version
@@ -13,7 +13,7 @@ Built with Next.js 16, TypeScript, and Recharts, this project enhances Uptime Ku
 <div align="center">
 <!-- Release -->
 
-[![Release](https://img.shields.io/github/v/release/Alice39s/kuma-mieru?style=flat-square&color=blue&label=Release)](https://github.com/Alice39s/kuma-mieru/releases/latest) [![License](https://img.shields.io/github/license/Alice39s/kuma-mieru?style=flat-square&color=blue)](https://github.com/Alice39s/kuma-mieru/blob/main/LICENSE)
+[![Release](https://img.shields.io/github/v/release/Alice39s/kuma-mieru?style=flat-square&color=blue&label=Release)](https://github.com/Alice39s/kuma-mieru/releases/latest) [![License](https://img.shields.io/github/license/Alice39s/kuma-mieru?style=flat-square&color=blue)](https://github.com/Alice39s/kuma-mieru/blob/main/LICENSE)  
 [![Workflow](https://img.shields.io/github/actions/workflow/status/Alice39s/kuma-mieru/release.yml?branch=main&style=flat-square&logo=github&label=Workflow)](https://github.com/Alice39s/kuma-mieru/actions/workflows/release.yml) [![Docker](https://img.shields.io/github/actions/workflow/status/Alice39s/kuma-mieru/docker-build.yml?branch=main&style=flat-square&logo=docker&label=Docker)](https://github.com/Alice39s/kuma-mieru/actions/workflows/docker-build.yml)
 
 <!-- Project Data -->
@@ -22,7 +22,7 @@ Built with Next.js 16, TypeScript, and Recharts, this project enhances Uptime Ku
 
 <!-- Tech Stack -->
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-v19-387CA0?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/) [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-v19-387CA0?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/) [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)  
 [![Bun](https://img.shields.io/badge/Bun-Package%20Manager-14151A?style=flat-square&logo=bun&logoColor=white)](https://bun.sh/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-4EB9FA?style=flat-square&logo=tailwind-css&logoColor=white)](https://v4.tailwindcss.com/)
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Alice39s/kuma-mieru)
@@ -149,7 +149,7 @@ Go to <https://vercel.com/new>, select **Import** to import the repository you j
    bun install
    ```
 
-3. **Configure Environment**
+3. **Configure Environment**  
    Copy `.env.example` to `.env` and modify:
 
    ```bash
@@ -188,7 +188,7 @@ Go to <https://vercel.com/new>, select **Import** to import the repository you j
    cd kuma-mieru
    ```
 
-2. **Configure Environment Variables**
+2. **Configure Environment Variables**  
    Duplicate the `.env.example` file to create your `.env` file:
 
    ```bash
@@ -311,47 +311,6 @@ After editing `.env`, run `docker compose up -d --force-recreate` so the contain
 > [!WARNING]
 > By default (`STRICT_IMAGE_REMOTE_PATTERNS=false`), `next/image` remote domain restrictions are relaxed to avoid image failures when Docker runtime endpoints change.
 > In high-security environments, set `STRICT_IMAGE_REMOTE_PATTERNS=true` for self-built images and ensure your build step generates a complete domain allowlist.
-> | Variable Name | Required | Description | Example |
-> | ------------------------ |----------|-----------------------------------------| ---------------------------------- |
-> | UPTIME_KUMA_BASE_URL | Yes | Base URL of Uptime Kuma instance | https://example.kuma-mieru.invalid |
-> | PAGE_ID | Yes | Status page path of Uptime Kuma | test1 |
-> | FEATURE_EDIT_THIS_PAGE | No | Whether to show "Edit This Page" button | false |
-> | FEATURE_SHOW_STAR_BUTTON | No | Whether to show "Star on Github" button | true |
-> | FEATURE_SHOW_HOME_BUTTON | No | Whether to show "Home" button | true |
-> | FEATURE_TITLE | No | Custom page title | My Monitoring Dashboard |
-> | FEATURE_DESCRIPTION | No | Custom page description | A beautiful monitoring dashboard |
-> | FEATURE_ICON | No | Custom page icon URL | /icon.svg |
-> | FEATURE_HOME_LINK | No | Custom "Home" button URL | / |
-
-### Health Check
-
-The Docker container includes a built-in health check mechanism that verifies service status every 30 seconds. The health check API endpoint is `/api/health`, returning:
-
-```json
-{
-  "status": "ok",
-  "timestamp": "2024-03-20T12:34:56.789Z",
-  "uptime": 123.456
-}
-```
-
-Check container health status using:
-
-```bash
-docker ps
-```
-
-Or via Docker Compose:
-
-```bash
-docker compose ps
-```
-
-Directly access the health check API:
-
-```bash
-curl http://localhost:3883/api/health
-```
 
 ## Integration with Uptime Kuma :link:
 
@@ -360,7 +319,7 @@ curl http://localhost:3883/api/health
 >
 > If you are using an older version, please refer to the [Uptime Kuma official documentation](https://github.com/louislam/uptime-kuma/wiki/%F0%9F%86%99-How-to-Update) to try to upgrade to the latest stable version (v1.23.0+), and remember to back up your data.
 
-Seamlessly works with the popular self-hosted monitoring tool:
+Seamlessly works with the popular self-hosted monitoring tool:  
 [Uptime Kuma](https://github.com/louislam/uptime-kuma)
 
 **Prerequisites**:
@@ -386,16 +345,16 @@ However, v2 may consider to support API interface of other monitoring tools such
 
 ## Contribution Guide :handshake:
 
-We welcome contributions! Please review:
+We welcome contributions! Please review:  
 [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 
 ## Star History :star2:
 
 <a href="https://github.com/Alice39s/kuma-mieru/stargazers" target="_blank" style="display: block" align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Alice39s/kuma-mieru&type=Timeline&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=Alice39s/kuma-mieru&type=Timeline&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
+    <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
   </picture>
 </a>
 

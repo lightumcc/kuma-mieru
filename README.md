@@ -13,7 +13,7 @@ Kuma Mieru 是一款基于 Next.js 16、TypeScript 和 Recharts 构建的第三�
 
 <!-- Release -->
 
-[![Release](https://img.shields.io/github/v/release/Alice39s/kuma-mieru?style=flat-square&color=blue&label=Release)](https://github.com/Alice39s/kuma-mieru/releases/latest) [![License](https://img.shields.io/github/license/Alice39s/kuma-mieru?style=flat-square&color=blue)](https://github.com/Alice39s/kuma-mieru/blob/main/LICENSE)
+[![Release](https://img.shields.io/github/v/release/Alice39s/kuma-mieru?style=flat-square&color=blue&label=Release)](https://github.com/Alice39s/kuma-mieru/releases/latest) [![License](https://img.shields.io/github/license/Alice39s/kuma-mieru?style=flat-square&color=blue)](https://github.com/Alice39s/kuma-mieru/blob/main/LICENSE)  
 [![Workflow](https://img.shields.io/github/actions/workflow/status/Alice39s/kuma-mieru/release.yml?branch=main&style=flat-square&logo=github&label=Workflow)](https://github.com/Alice39s/kuma-mieru/actions/workflows/release.yml) [![Docker](https://img.shields.io/github/actions/workflow/status/Alice39s/kuma-mieru/docker-build.yml?branch=main&style=flat-square&logo=docker&label=Docker)](https://github.com/Alice39s/kuma-mieru/actions/workflows/docker-build.yml)
 
 <!-- Project Data -->
@@ -22,7 +22,7 @@ Kuma Mieru 是一款基于 Next.js 16、TypeScript 和 Recharts 构建的第三�
 
 <!-- Tech Stack -->
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-v19-387CA0?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/) [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-v19-387CA0?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/) [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)  
 [![Bun](https://img.shields.io/badge/Bun-Package%20Manager-14151A?style=flat-square&logo=bun&logoColor=white)](https://bun.sh/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v4-4EB9FA?style=flat-square&logo=tailwind-css&logoColor=white)](https://v4.tailwindcss.com/)
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Alice39s/kuma-mieru)
@@ -312,17 +312,6 @@ docker run -d \
 > [!WARNING]
 > 默认情况下（`STRICT_IMAGE_REMOTE_PATTERNS=false`）会放开 `next/image` 的远程图片域名限制，以避免 Docker 运行时域名变化导致图片加载失败。
 > 如果你运行在高安全要求环境，建议在自建镜像时设置 `STRICT_IMAGE_REMOTE_PATTERNS=true`，并确保构建阶段可生成完整域名白名单。
-> | 变量名 | 必填 | 说明 | 示例/默认值 |
-> |--------------------------| ---- |--------------------------| -------------------------------------------------- |
-> | UPTIME_KUMA_BASE_URL | Yes | Uptime Kuma 实例的基础 URL | https://example.kuma-mieru.invalid |
-> | PAGE_ID | Yes | Uptime Kuma 实例的状态页面 ID | test1 |
-> | FEATURE_EDIT_THIS_PAGE | No | 是否展示 "Edit This Page" 按钮 | false |
-> | FEATURE_SHOW_STAR_BUTTON | No | 是否展示 "Star on Github" 按钮 | true |
-> | FEATURE_SHOW_HOME_BUTTON | No | 是否展示 "Home" 按钮 | true |
-> | FEATURE_TITLE | No | 自定义页面标题 | Kuma Mieru |
-> | FEATURE_DESCRIPTION | No | 自定义页面描述 | A beautiful and modern uptime monitoring dashboard |
-> | FEATURE_ICON | No | 自定义页面图标URL | /icon.svg |
-> | FEATURE_HOME_LINK | No | 自定义 "Home" 按钮 URL | / |
 
 ## 与 Uptime Kuma 集成 :link:
 
@@ -362,9 +351,9 @@ Kuma Mieru 设计之初就是为了解决 Uptime Kuma 的不足，所以 v1 暂�
 
 <a href="https://github.com/Alice39s/kuma-mieru/stargazers" target="_blank" style="display: block" align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Alice39s/kuma-mieru&type=Timeline&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=Alice39s/kuma-mieru&type=Timeline&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
+    <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=Alice39s/kuma-mieru&type=Timeline" />
   </picture>
 </a>
 

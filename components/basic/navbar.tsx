@@ -14,7 +14,6 @@ import {
 } from '@heroui/react';
 import { link as linkStyles } from '@heroui/theme';
 import clsx from 'clsx';
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { useCallback, useEffect, useRef } from 'react';
 
@@ -118,7 +117,7 @@ export const Navbar = () => {
     </Button>
   );
 
-  const getIconUrl = () => buildIconProxyUrl(pageConfig.pageId) || '/icon.svg';
+  const getIconUrl = () => pageConfig.siteMeta.icon.trim() || buildIconProxyUrl(pageConfig.pageId);
   const navItems = [
     {
       label: 'page.main',
@@ -141,11 +140,12 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href={homeHref}>
-            <Image
+            <img
               src={getIconUrl() || '/icon.svg'}
               alt={`${resolvedTitle} logo`}
               width={34}
               height={34}
+              className="mr-1"
             />
             <p className="font-bold text-inherit">{resolvedTitle}</p>
           </NextLink>

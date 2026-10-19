@@ -2,7 +2,6 @@
 
 import clsx from 'clsx';
 import { useTranslations } from 'next-intl';
-import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
@@ -69,7 +68,7 @@ function PageTabItem({ tab }: { tab: ResolvedPageTab }) {
         )}
       >
         <span className="relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-default-200 bg-default-100">
-          <Image src={tab.icon} alt={tab.title} width={28} height={28} />
+          <img src={tab.icon} alt={tab.title} width={28} height={28} />
           {/* health dot */}
           <span
             aria-hidden="true"
@@ -116,7 +115,7 @@ export function PageTabs({ tabs: providedTabs }: PageTabsProps) {
     const title = metaFromPreload?.title?.trim() || fallbackSiteMeta?.title?.trim() || id;
     const description =
       metaFromPreload?.description?.trim() || fallbackSiteMeta?.description?.trim();
-    const icon = buildIconProxyUrl(id);
+    const icon = fallbackSiteMeta?.icon.trim() || buildIconProxyUrl(id);
     const health = metaFromPreload?.health ?? 'healthy';
 
     const href = id === pageConfig.defaultPageId ? '/' : `/${id}`;
